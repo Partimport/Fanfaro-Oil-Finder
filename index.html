@@ -3,8 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <title>FANFARO Voiteluaineiden Hakukone</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
     * { box-sizing: border-box; }
+
     body {
       margin: 0;
       padding: 0;
@@ -16,11 +18,27 @@
       align-items: flex-start;
       padding-top: 40px;
     }
+
+    .topbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      background: #00572C;
+      color: #FECF00;
+      padding: 8px 16px;
+      font-size: 13px;
+      font-weight: 600;
+      text-align: center;
+      z-index: 10;
+    }
+
     .logo {
       display: block;
       width: 180px;
       margin: 0 auto 6px auto;
     }
+
     .logo-error {
       text-align: center;
       font-size: 12px;
@@ -28,15 +46,18 @@
       margin-bottom: 14px;
       display: none;
     }
+
     .card {
       width: 100%;
       max-width: 480px;
-      padding: 28px 32px;
+      padding: 24px 22px 26px;
       border-radius: 14px;
       border: 1px solid #dfeee2;
       background: #ffffff;
       box-shadow: 0 4px 18px rgba(0,0,0,0.06);
+      margin: 0 16px 32px;
     }
+
     h1 {
       font-size: 22px;
       margin: 0 0 12px 0;
@@ -44,15 +65,18 @@
       color: #00572C;
       font-weight: 800;
     }
+
     p.sub {
       margin: 0 0 20px 0;
       text-align: center;
       color: #444;
       font-size: 14px;
     }
+
     .form-group {
       margin-bottom: 14px;
     }
+
     label {
       display: block;
       margin-bottom: 4px;
@@ -60,16 +84,18 @@
       font-size: 13px;
       color: #00572C;
     }
+
     input, select {
       width: 100%;
-      padding: 8px 10px;
+      padding: 10px 11px;
       border-radius: 6px;
       border: 1px solid #bbb;
       font-size: 14px;
     }
+
     button {
       width: 100%;
-      margin-top: 14px;
+      margin-top: 16px;
       padding: 12px 16px;
       border-radius: 8px;
       border: none;
@@ -79,16 +105,43 @@
       cursor: pointer;
       font-weight: bold;
     }
+
     button:hover { background-color: #008444; }
+
     .footnote {
-      margin-top: 10px;
+      margin-top: 12px;
       font-size: 11px;
       color: #666;
       text-align: center;
     }
+
+    @media (max-width: 600px) {
+      body {
+        align-items: flex-start;
+        padding-top: 56px;
+      }
+      .card {
+        margin: 0 10px 24px;
+        padding: 20px 18px 22px;
+      }
+      h1 {
+        font-size: 20px;
+      }
+      p.sub {
+        font-size: 13px;
+      }
+      button {
+        font-size: 15px;
+        padding: 11px 14px;
+      }
+    }
   </style>
 </head>
 <body>
+  <div class="topbar">
+    FANFARO – voiteluaineiden hakukone (beta)
+  </div>
+
   <div>
     <!-- FANFARO LOGO -->
     <img
@@ -146,10 +199,12 @@
     const logo = document.getElementById("fanfaroLogo");
     const logoError = document.getElementById("logoError");
 
-    logo.addEventListener("error", function () {
-      logo.style.display = "none";
-      logoError.style.display = "block";
-    });
+    if (logo) {
+      logo.addEventListener("error", function () {
+        logo.style.display = "none";
+        logoError.style.display = "block";
+      });
+    }
 
     document.getElementById("hakulomake").addEventListener("submit", function (e) {
       e.preventDefault();
