@@ -19,7 +19,14 @@
     .logo {
       display: block;
       width: 180px;
-      margin: 0 auto 20px auto;
+      margin: 0 auto 6px auto;
+    }
+    .logo-error {
+      text-align: center;
+      font-size: 12px;
+      color: #b00;
+      margin-bottom: 14px;
+      display: none;
     }
     .card {
       width: 100%;
@@ -83,23 +90,37 @@
 </head>
 <body>
   <div>
-    <img src="https://fanfaro.de/wp-content/uploads/2020/06/fanfaro-logo.png" class="logo" alt="Fanfaro Logo">
+    <!-- FANFARO LOGO -->
+    <img
+      src="https://fanfaro.de/wp-content/uploads/2020/06/fanfaro-logo.png"
+      class="logo"
+      alt="Fanfaro Logo"
+      id="fanfaroLogo"
+    >
+    <div id="logoError" class="logo-error">
+      Logo ei latautunut (URL ei toimi tai yhteys estetty).
+    </div>
+
     <div class="card">
       <h1>FANFARO VOITELUAINEIDEN HAKUKONE</h1>
       <p class="sub">Syötä tiedot, niin näytämme sopivat Fanfaro-öljyt.</p>
+
       <form id="hakulomake">
         <div class="form-group">
           <label for="rekisterinumero">Anna rekisterinumero</label>
           <input type="text" id="rekisterinumero" name="rekisterinumero" placeholder="ABC-123" />
         </div>
+
         <div class="form-group">
           <label for="viskositeetti">Anna viskositeetti</label>
           <input type="text" id="viskositeetti" name="viskositeetti" placeholder="esim. 5W-30" required />
         </div>
+
         <div class="form-group">
           <label for="luokitus">Anna luokitus</label>
           <input type="text" id="luokitus" name="luokitus" placeholder="esim. ACEA C3" />
         </div>
+
         <div class="form-group">
           <label for="kaytto">Käyttöprofiili (valinnainen)</label>
           <select id="kaytto" name="kaytto">
@@ -110,26 +131,40 @@
             <option value="raskas">Raskas käyttö</option>
           </select>
         </div>
+
         <button type="submit">Hae öljysuositus</button>
       </form>
+
       <div class="footnote">
         Vaihe 1/2 – seuraavalla sivulla näytetään öljysuositukset.
       </div>
     </div>
   </div>
+
   <script>
+    // Logo-debug: näytetään teksti, jos logo ei lataudu
+    const logo = document.getElementById("fanfaroLogo");
+    const logoError = document.getElementById("logoError");
+
+    logo.addEventListener("error", function () {
+      logo.style.display = "none";
+      logoError.style.display = "block";
+    });
+
     document.getElementById("hakulomake").addEventListener("submit", function (e) {
       e.preventDefault();
       const rek = document.getElementById("rekisterinumero").value.trim();
       const vis = document.getElementById("viskositeetti").value.trim();
       const lua = document.getElementById("luokitus").value.trim();
       const kaytto = document.getElementById("kaytto").value;
+
       const params = new URLSearchParams({
         rek: rek,
         vis: vis,
         lua: lua,
         kaytto: kaytto
       });
+
       window.location.href = "Tulokset.html?" + params.toString();
     });
   </script>
