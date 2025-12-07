@@ -72,13 +72,13 @@
 </head>
 <body>
   <div class="card">
-    <h1>Moottoriöljy‑haku</h1>
-    <p class="sub">Syötä tiedot, niin vertaamme ne öljysuosituksiin.</p>
+    <h1>Moottoriöljy-haku</h1>
+    <p class="sub">Syötä tiedot, niin näytämme sopivat öljyt.</p>
 
     <form id="hakulomake">
       <div class="form-group">
         <label for="rekisterinumero">Anna rekisterinumero</label>
-        <input type="text" id="rekisterinumero" name="rekisterinumero" placeholder="ABC-123" required />
+        <input type="text" id="rekisterinumero" name="rekisterinumero" placeholder="ABC-123" />
       </div>
 
       <div class="form-group">
@@ -88,7 +88,7 @@
 
       <div class="form-group">
         <label for="luokitus">Anna luokitus</label>
-        <input type="text" id="luokitus" name="luokitus" placeholder="esim. ACEA C3" required />
+        <input type="text" id="luokitus" name="luokitus" placeholder="esim. ACEA C3" />
       </div>
 
       <div class="form-group">
@@ -125,7 +125,8 @@
         kaytto: kaytto
       });
 
-      window.location.href = "results.html?" + params.toString();
+      // HUOM: käytetään suomenkielistä tiedostonimeä Tulokset.html
+      window.location.href = "Tulokset.html?" + params.toString();
     });
   </script>
 </body>
