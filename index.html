@@ -2,111 +2,136 @@
 <html lang="fi">
 <head>
   <meta charset="UTF-8" />
-  <title>Moottoriöljy – haku</title>
+  <title>FANFARO Voiteluaineiden Hakukone</title>
   <style>
     * { box-sizing: border-box; }
     body {
       margin: 0;
       padding: 0;
-      background-color: #ffffff;
+      background-color: #F4FBF6;
       font-family: Arial, sans-serif;
       min-height: 100vh;
       display: flex;
       justify-content: center;
-      align-items: center;
+      align-items: flex-start;
+      padding-top: 40px;
     }
+
+    .logo {
+      display: block;
+      width: 180px;
+      margin: 0 auto 20px auto;
+    }
+
     .card {
       width: 100%;
-      max-width: 420px;
-      padding: 24px 28px;
-      border-radius: 12px;
-      border: 1px solid #e0e0e0;
+      max-width: 480px;
+      padding: 28px 32px;
+      border-radius: 14px;
+      border: 1px solid #dfeee2;
+      background: #ffffff;
       box-shadow: 0 4px 18px rgba(0,0,0,0.06);
     }
+
     h1 {
       font-size: 22px;
-      margin: 0 0 6px 0;
+      margin: 0 0 12px 0;
       text-align: center;
+      color: #00572C;
+      font-weight: 800;
     }
+
     p.sub {
       margin: 0 0 20px 0;
       text-align: center;
-      color: #555;
+      color: #444;
       font-size: 14px;
     }
+
     .form-group {
       margin-bottom: 14px;
     }
+
     label {
       display: block;
       margin-bottom: 4px;
       font-weight: bold;
       font-size: 13px;
+      color: #00572C;
     }
+
     input, select {
       width: 100%;
       padding: 8px 10px;
       border-radius: 6px;
-      border: 1px solid #ccc;
+      border: 1px solid #bbb;
       font-size: 14px;
     }
+
     button {
       width: 100%;
-      margin-top: 12px;
-      padding: 10px 16px;
+      margin-top: 14px;
+      padding: 12px 16px;
       border-radius: 8px;
       border: none;
-      background-color: #111;
+      background-color: #00572C;
       color: #fff;
-      font-size: 15px;
+      font-size: 16px;
       cursor: pointer;
+      font-weight: bold;
     }
-    button:hover { opacity: 0.92; }
+    button:hover { background-color: #008444; }
+
     .footnote {
       margin-top: 10px;
       font-size: 11px;
-      color: #888;
+      color: #666;
       text-align: center;
     }
   </style>
 </head>
+
 <body>
-  <div class="card">
-   <h1>FANFARO VOITELUAINE HAKUKONE</h1>
-    <p class="sub">Syötä tiedot, niin näytämme sopivat öljyt.</p>
+  <div>
+    <img src="https://fanfaro.de/wp-content/uploads/2020/06/fanfaro-logo.png" class="logo" alt="Fanfaro Logo">
 
-    <form id="hakulomake">
-      <div class="form-group">
-        <label for="rekisterinumero">Anna rekisterinumero</label>
-        <input type="text" id="rekisterinumero" name="rekisterinumero" placeholder="ABC-123" />
+    <div class="card">
+      <h1>FANFARO VOITELUAINEIDEN HAKUKONE</h1>
+      <p class="sub">Syötä tiedot, niin näytämme sopivat Fanfaro-öljyt.</p>
+
+      <form id="hakulomake">
+        <div class="form-group">
+          <label for="rekisterinumero">Anna rekisterinumero</label>
+          <input type="text" id="rekisterinumero" name="rekisterinumero" placeholder="ABC-123" />
+        </div>
+
+        <div class="form-group">
+          <label for="viskositeetti">Anna viskositeetti</label>
+          <input type="text" id="viskositeetti" name="viskositeetti" placeholder="esim. 5W-30" required />
+        </div>
+
+        <div class="form-group">
+          <label for="luokitus">Anna luokitus</label>
+          <input type="text" id="luokitus" name="luokitus" placeholder="esim. ACEA C3" />
+        </div>
+
+        <div class="form-group">
+          <label for="kaytto">Käyttöprofiili (valinnainen)</label>
+          <select id="kaytto" name="kaytto">
+            <option value="">– ei valintaa –</option>
+            <option value="normaali">Normaali ajo</option>
+            <option value="kaupunki">Kaupunkiajo</option>
+            <option value="pitka">Pitkät ajomatkat</option>
+            <option value="raskas">Raskas käyttö</option>
+          </select>
+        </div>
+
+        <button type="submit">Hae öljysuositus</button>
+      </form>
+
+      <div class="footnote">
+        Vaihe 1/2 – seuraavalla sivulla näytetään öljysuositukset.
       </div>
-
-      <div class="form-group">
-        <label for="viskositeetti">Anna viskositeetti</label>
-        <input type="text" id="viskositeetti" name="viskositeetti" placeholder="esim. 5W-30" required />
-      </div>
-
-      <div class="form-group">
-        <label for="luokitus">Anna luokitus</label>
-        <input type="text" id="luokitus" name="luokitus" placeholder="esim. ACEA C3" />
-      </div>
-
-      <div class="form-group">
-        <label for="kaytto">Käyttöprofiili (valinnainen)</label>
-        <select id="kaytto" name="kaytto">
-          <option value="">– ei valintaa –</option>
-          <option value="normaali">Normaali ajo</option>
-          <option value="kaupunki">Lyhyet kaupunkimatkat</option>
-          <option value="pitka">Pitkät moottoritieajot</option>
-          <option value="raskas">Raskas käyttö / perävaunu</option>
-        </select>
-      </div>
-
-      <button type="submit">Hae öljysuositus</button>
-    </form>
-
-    <div class="footnote">
-      Vaihe 1/2 – seuraavalla sivulla näytetään ajoneuvotiedot ja öljysuositukset.
     </div>
   </div>
 
@@ -125,9 +150,9 @@
         kaytto: kaytto
       });
 
-      // HUOM: käytetään suomenkielistä tiedostonimeä Tulokset.html
       window.location.href = "Tulokset.html?" + params.toString();
     });
   </script>
+
 </body>
 </html>
