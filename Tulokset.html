@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+  <meta charset="UTF-8" />
+  <title>Moottoriöljy – suositus</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #ffffff;
+      font-family: Arial, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .layout {
+      width: 100%;
+      max-width: 900px;
+      padding: 20px;
+      display: grid;
+      grid-template-columns: 1.1fr 1.2fr;
+      gap: 20px;
+    }
+    @media (max-width: 720px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+    }
+    .card {
+      padding: 18px 20px;
+      border-radius: 12px;
+      border: 1px solid #e0e0e0;
+      box-shadow: 0 4px 18px rgba(0,0,0,0.06);
+      background: #fff;
+    }
+    h1 {
+      font-size: 22px;
+      margin: 0 0 6px 0;
+    }
+    h2 {
+      font-size: 18px;
+      margin: 0 0 10px 0;
+    }
+    p {
+      margin: 4px 0;
+      font-size: 14px;
+      color: #444;
+    }
+    .tag {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 999px;
+      background: #f5f5f5;
+      font-size: 11px;
+      margin-right: 4px;
+      margin-top: 2px;
+    }
+    .oil-item {
+      margin-bottom: 10px;
+      padding-bottom: 8px;
+      border-bottom: 1px dashed #eee;
+    }
+    .oil-item:last-child {
+      border-bottom: none;
+    }
+    .muted {
+      color: #777;
+      font-size: 13px;
+    }
+    .back {
+      display: inline-block;
+      margin-top: 10px;
+      font-size: 13px;
+      text-decoration: none;
+      color: #0055cc;
+    }
+    .back:hover { text-decoration: underline; }
+    .pill {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: #eef5ff;
+      font-size: 11px;
+      color: #2255aa;
+      margin-left: 4px;
+    }
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <div class="card">
+      <h1>Syötetyt tiedot</h1>
+      <p id="rekRow"></p>
+      <p id="visRow"></p>
+      <p id="luaRow"></p>
+      <p id="kayttoRow"></p>
+
+      <h2 style="margin-top:16px;">Ajoneuvotiedot (API)</h2>
+      <p class="muted" id="ajoneuvoInfo">Haetaan ajoneuvotietoja...</p>
+
+      <a class="back" href="index.html">&larr; Takaisin hakulomakkeelle</a>
+    </div>
+
+    <div class="card">
+      <h2>Öljysuositukset</h2>
+      <div id="suositukset"></div>
+      <p class="muted" id="logiteksti"></p>
+    </div>
+  </div>
+
+  <script>
+    const ESIMERKKI_OLJYT = [
+      {
+        nimi: "Perus Öljy 5W-30 C3",
+        viskositeetti: "5W-30",
+        luokitus: "ACEA C3",
+        kuvaus: "Hyvä valinta nykyaikaisiin bensiini- ja dieselmoottoreihin, joissa on hiukkassuodatin.",
+        profiilit: ["normaali", "kaupunki"]
+      },
+      {
+        nimi: "Pitkäväli 0W-30 C2",
+        viskositeetti: "0W-30",
+        luokitus: "ACEA C2",
+        kuvaus: "Polttoainetta säästävä täyssynteettinen öljy pitkille huoltoväleille.",
+        profiilit: ["pitka"]
+      },
+      {
+        nimi: "Raskas Käyttö 5W-40 A3/B4",
+        viskositeetti: "5W-40",
+        luokitus: "ACEA A3/B4",
+        kuvaus: "Soveltuu vanhempiin ja raskaasti kuormitettuihin moottoreihin.",
+        profiilit: ["raskas"]
+      },
+      {
+        nimi: "Talvi Plus 0W-20",
+        viskositeetti: "0W-20",
+        luokitus: "API SP",
+        kuvaus: "Erinomainen kylmäkäynnistyksiin ja nykyaikaisiin bensiinimoottoreihin.",
+        profiilit: ["kaupunki", "normaali"]
+      }
+    ];
+
+    function haeParametrit() {
+      const params = new URLSearchParams(window.location.search);
+      return {
+        rek: params.get("rek") || "",
+        vis: params.get("vis") || "",
+        lua: params.get("lua") || "",
+        kaytto: params.get("kaytto") || ""
+      };
+    }
+
+    function naytaSyote(parametrit) {
+      document.getElementById("rekRow").innerText = "Rekisterinumero: " + (parametrit.rek || "-");
+      document.getElementById("visRow").innerText = "Viskositeetti: " + (parametrit.vis || "-");
+      document.getElementById("luaRow").innerText = "Luokitus: " + (parametrit.lua || "-");
+
+      let kayttoTeksti = "Käyttöprofiili: ";
+      switch (parametrit.kaytto) {
+        case "normaali":
+          kayttoTeksti += "Normaali ajo";
+          break;
+        case "kaupunki":
+          kayttoTeksti += "Lyhyet kaupunkimatkat";
+          break;
+        case "pitka":
+          kayttoTeksti += "Pitkät moottoritieajot";
+          break;
+        case "raskas":
+          kayttoTeksti += "Raskas käyttö / perävaunu";
+          break;
+        default:
+          kayttoTeksti += "-";
+      }
+      document.getElementById("kayttoRow").innerText = kayttoTeksti;
+    }
+
+    function suositteleOljyja(parametrit, ajoneuvoData) {
+      const visInput = (parametrit.vis || "").toUpperCase().replace(/\s+/g, "");
+      const luaInput = (parametrit.lua || "").toUpperCase().trim();
+      const kaytto = parametrit.kaytto;
+
+      let suositukset = ESIMERKKI_OLJYT.filter(o => {
+        const visMatch = o.viskositeetti.toUpperCase().replace(/\s+/g, "") === visInput;
+        const luaMatch = luaInput && o.luokitus.toUpperCase().indexOf(luaInput) !== -1;
+        return visMatch && (luaInput ? luaMatch : true);
+      });
+
+      if (kaytto && suositukset.length > 0) {
+        suositukset = suositukset.filter(o => o.profiilit.includes(kaytto)) || suositukset;
+      }
+
+      const cont = document.getElementById("suositukset");
+      cont.innerHTML = "";
+
+      if (suositukset.length === 0) {
+        cont.innerHTML = "<p>Syötteillä ei löytynyt valmista suositusta. Voit silti tarkentaa valikoimaa manuaalisesti öljytaulukostasi.</p>";
+        document.getElementById("logiteksti").innerText =
+          "Vinkki: tässä kohtaa voi kytkeä oman tuotetietokantasi ja näyttää vain sille vastaavat tuotteet.";
+        return;
+      }
+
+      suositukset.forEach(o => {
+        const div = document.createElement("div");
+        div.className = "oil-item";
+        div.innerHTML = `
+          <strong>${o.nimi}</strong>
+          <div>
+            <span class="tag">${o.viskositeetti}</span>
+            <span class="tag">${o.luokitus}</span>
+            ${kaytto ? `<span class="pill">Sopii profiilille: ${kaytto}</span>` : ""}
+          </div>
+          <p>${o.kuvaus}</p>
+        `;
+        cont.appendChild(div);
+      });
+
+      document.getElementById("logiteksti").innerText =
+        "Tämä on esimerkkilogiikka. Voit korvata taulukon omilla tuotteillasi ja lisätä valmistajakohtaiset hyväksynnät.";
+    }
+
+    async function haeAjoneuvoTiedot(rek) {
+      if (!rek) {
+        document.getElementById("ajoneuvoInfo").innerText =
+          "Rekisterinumero puuttuu, joten ajoneuvotietoja ei haeta.";
+        return null;
+      }
+
+      try {
+        const url = "https://OMA-BACKEND-OSOITE.TLD/ajoneuvo?rek=" + encodeURIComponent(rek);
+
+        const res = await fetch(url);
+        if (!res.ok) {
+          throw new Error("Virhe API‑vastauksessa: " + res.status);
+        }
+        const data = await res.json();
+
+        const teksti =
+          (data.merkki || "Tuntematon merkki") + " " +
+          (data.malli || "") +
+          (data.vuosimalli ? " (" + data.vuosimalli + ")" : "");
+
+        document.getElementById("ajoneuvoInfo").innerText = teksti || "Ajoneuvotiedot haettu, mutta sisältö tyhjä.";
+        return data;
+      } catch (e) {
+        console.warn("Ajoneuvo-API ei ole vielä käytössä tai vastasi virheellä:", e);
+        document.getElementById("ajoneuvoInfo").innerText =
+          "Ajoneuvo-API ei ole vielä kytketty. Tässä kohdassa näytetään auton merkki, malli ja vuosimalli, kun API on käytössä.";
+        return null;
+      }
+    }
+
+    (async function init() {
+      const parametrit = haeParametrit();
+      naytaSyote(parametrit);
+      const ajoneuvoData = await haeAjoneuvoTiedot(parametrit.rek);
+      suositteleOljyja(parametrit, ajoneuvoData);
+    })();
+  </script>
+</body>
+</html>

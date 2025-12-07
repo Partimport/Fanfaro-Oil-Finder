@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+  <meta charset="UTF-8" />
+  <title>Moottoriöljy – haku</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #ffffff;
+      font-family: Arial, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .card {
+      width: 100%;
+      max-width: 420px;
+      padding: 24px 28px;
+      border-radius: 12px;
+      border: 1px solid #e0e0e0;
+      box-shadow: 0 4px 18px rgba(0,0,0,0.06);
+    }
+    h1 {
+      font-size: 22px;
+      margin: 0 0 6px 0;
+      text-align: center;
+    }
+    p.sub {
+      margin: 0 0 20px 0;
+      text-align: center;
+      color: #555;
+      font-size: 14px;
+    }
+    .form-group {
+      margin-bottom: 14px;
+    }
+    label {
+      display: block;
+      margin-bottom: 4px;
+      font-weight: bold;
+      font-size: 13px;
+    }
+    input, select {
+      width: 100%;
+      padding: 8px 10px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 14px;
+    }
+    button {
+      width: 100%;
+      margin-top: 12px;
+      padding: 10px 16px;
+      border-radius: 8px;
+      border: none;
+      background-color: #111;
+      color: #fff;
+      font-size: 15px;
+      cursor: pointer;
+    }
+    button:hover { opacity: 0.92; }
+    .footnote {
+      margin-top: 10px;
+      font-size: 11px;
+      color: #888;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Moottoriöljy‑haku</h1>
+    <p class="sub">Syötä tiedot, niin vertaamme ne öljysuosituksiin.</p>
+
+    <form id="hakulomake">
+      <div class="form-group">
+        <label for="rekisterinumero">Anna rekisterinumero</label>
+        <input type="text" id="rekisterinumero" name="rekisterinumero" placeholder="ABC-123" required />
+      </div>
+
+      <div class="form-group">
+        <label for="viskositeetti">Anna viskositeetti</label>
+        <input type="text" id="viskositeetti" name="viskositeetti" placeholder="esim. 5W-30" required />
+      </div>
+
+      <div class="form-group">
+        <label for="luokitus">Anna luokitus</label>
+        <input type="text" id="luokitus" name="luokitus" placeholder="esim. ACEA C3" required />
+      </div>
+
+      <div class="form-group">
+        <label for="kaytto">Käyttöprofiili (valinnainen)</label>
+        <select id="kaytto" name="kaytto">
+          <option value="">– ei valintaa –</option>
+          <option value="normaali">Normaali ajo</option>
+          <option value="kaupunki">Lyhyet kaupunkimatkat</option>
+          <option value="pitka">Pitkät moottoritieajot</option>
+          <option value="raskas">Raskas käyttö / perävaunu</option>
+        </select>
+      </div>
+
+      <button type="submit">Hae öljysuositus</button>
+    </form>
+
+    <div class="footnote">
+      Vaihe 1/2 – seuraavalla sivulla näytetään ajoneuvotiedot ja öljysuositukset.
+    </div>
+  </div>
+
+  <script>
+    document.getElementById("hakulomake").addEventListener("submit", function (e) {
+      e.preventDefault();
+      const rek = document.getElementById("rekisterinumero").value.trim();
+      const vis = document.getElementById("viskositeetti").value.trim();
+      const lua = document.getElementById("luokitus").value.trim();
+      const kaytto = document.getElementById("kaytto").value;
+
+      const params = new URLSearchParams({
+        rek: rek,
+        vis: vis,
+        lua: lua,
+        kaytto: kaytto
+      });
+
+      window.location.href = "results.html?" + params.toString();
+    });
+  </script>
+</body>
+</html>
