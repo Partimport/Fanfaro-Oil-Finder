@@ -3,64 +3,135 @@
 <head>
   <meta charset="UTF-8" />
   <title>FANFARO Voiteluaineiden Hakukone – Tulokset</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
     * { box-sizing: border-box; }
+
     body {
       margin: 0;
       padding: 0;
-      background-color: #F4FBF6;
-      font-family: Arial, sans-serif;
       min-height: 100vh;
+      background: #f3f4f6;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+        Roboto, Helvetica, Arial, sans-serif;
       display: flex;
       justify-content: center;
-      align-items: flex-start;
-      padding-top: 40px;
+      align-items: center;
+    }
+
+    .page {
+      width: 100%;
+      max-width: 960px;
+      padding: 24px 16px;
+    }
+
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 18px;
+      gap: 12px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
     }
 
     .logo {
       display: block;
-      width: 180px;
-      margin: 0 auto 20px auto;
+      width: 150px;
+      height: auto;
     }
 
-    .layout {
-      width: 100%;
-      max-width: 1000px;
-      padding: 0 16px 40px 16px;
+    .header-text {
+      display: flex;
+      flex-direction: column;
     }
 
-    .cards {
-      display: grid;
-      grid-template-columns: 1.05fr 1.2fr;
-      gap: 20px;
+    .header-title {
+      font-size: 14px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #374151;
+      font-weight: 700;
     }
 
-    @media (max-width: 800px) {
-      .cards {
-        grid-template-columns: 1fr;
-      }
+    .header-sub {
+      font-size: 13px;
+      color: #6b7280;
+    }
+
+    .step-pill {
+      font-size: 12px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: #e5f4ea;
+      color: #065f46;
+      font-weight: 600;
+      white-space: nowrap;
     }
 
     .card {
-      padding: 20px 22px;
-      border-radius: 14px;
-      border: 1px solid #dfeee2;
       background: #ffffff;
-      box-shadow: 0 4px 18px rgba(0,0,0,0.06);
+      border-radius: 18px;
+      box-shadow:
+        0 18px 45px rgba(15, 23, 42, 0.18),
+        0 1px 2px rgba(15, 23, 42, 0.10);
+      padding: 24px 24px 22px;
+      border: 1px solid #e5e7eb;
+      display: grid;
+      grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+      gap: 24px;
+    }
+
+    .card-main {
+      border-right: 1px solid #f3f4f6;
+      padding-right: 18px;
+    }
+
+    .card-side {
+      padding-left: 4px;
+    }
+
+    @media (max-width: 800px) {
+      .card {
+        grid-template-columns: 1fr;
+        padding: 20px 18px 18px;
+      }
+      .card-main {
+        border-right: none;
+        border-bottom: 1px solid #f3f4f6;
+        padding-right: 0;
+        padding-bottom: 16px;
+        margin-bottom: 6px;
+      }
+      .card-side {
+        padding-left: 0;
+      }
+      .header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .page {
+        padding-top: 16px;
+        padding-bottom: 16px;
+      }
     }
 
     h1 {
       font-size: 22px;
       margin: 0 0 6px 0;
-      text-align: center;
-      color: #00572C;
+      color: #111827;
       font-weight: 800;
     }
 
     h2 {
-      font-size: 18px;
-      margin: 10px 0 10px 0;
-      color: #00572C;
+      font-size: 16px;
+      margin: 16px 0 6px 0;
+      color: #111827;
+      font-weight: 700;
     }
 
     p {
@@ -74,6 +145,41 @@
       font-size: 13px;
     }
 
+    .section-label {
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #6b7280;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .info-box {
+      margin-top: 8px;
+      padding: 8px 10px;
+      border-radius: 10px;
+      background: #f9fafb;
+      border: 1px dashed #e5e7eb;
+      font-size: 12px;
+      color: #4b5563;
+    }
+
+    .back {
+      display: inline-flex;
+      align-items: center;
+      margin-top: 12px;
+      font-size: 13px;
+      text-decoration: none;
+      color: #065f46;
+      font-weight: 600;
+    }
+    .back span {
+      font-size: 15px;
+      margin-right: 4px;
+    }
+    .back:hover { text-decoration: underline; }
+
+    /* Öljytuotekortit */
     .tag {
       display: inline-block;
       padding: 4px 9px;
@@ -90,7 +196,7 @@
     .oil-item {
       margin-bottom: 14px;
       padding-bottom: 10px;
-      border-bottom: 1px dashed #e3e3e3;
+      border-bottom: 1px dashed #e5e7eb;
     }
     .oil-item:last-child {
       border-bottom: none;
@@ -110,29 +216,19 @@
     .price {
       font-weight: bold;
       margin-top: 4px;
-      color: #00572C;
+      color: #065f46;
     }
-
-    .back {
-      display: inline-block;
-      margin-top: 10px;
-      font-size: 13px;
-      text-decoration: none;
-      color: #00572C;
-      font-weight: 600;
-    }
-    .back:hover { text-decoration: underline; }
 
     .order-note {
       margin-top: 14px;
       padding-top: 10px;
-      border-top: 1px solid #e3e3e3;
+      border-top: 1px solid #e5e7eb;
       font-size: 13px;
-      color: #333;
+      color: #374151;
     }
 
     .order-note strong {
-      color: #00572C;
+      color: #111827;
     }
 
     .code {
@@ -144,64 +240,134 @@
     }
 
     .footer {
-      margin-top: 18px;
+      margin-top: 16px;
       font-size: 11px;
-      color: #777;
-      text-align: center;
+      color: #9ca3af;
+      text-align: left;
       line-height: 1.4;
     }
     .footer a {
-      color: #555;
+      color: #6b7280;
       text-decoration: none;
     }
     .footer a:hover {
       text-decoration: underline;
     }
+
+    .external-check {
+      margin-top: 10px;
+      font-size: 12px;
+      color: #4b5563;
+    }
+    .external-check a {
+      color: #065f46;
+      font-weight: 600;
+      text-decoration: none;
+    }
+    .external-check a:hover {
+      text-decoration: underline;
+    }
+
+    .side-title {
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #6b7280;
+      margin-bottom: 6px;
+    }
+
+    .side-sub {
+      font-size: 13px;
+      color: #6b7280;
+      margin-bottom: 8px;
+    }
   </style>
 </head>
 <body>
-  <div class="layout">
-    <!-- Sama logo kuin etusivulla -->
-    <img src="https://i.ibb.co/08yJmdj/Fanfaro-logo-2-27-11-2025.png" class="logo" alt="Fanfaro Logo">
+  <div class="page">
+    <!-- Yläosa: logo + otsikko + step-pill -->
+    <div class="header">
+      <div class="brand">
+        <img
+          src="https://i.ibb.co/08yJmdj/Fanfaro-logo-2-27-11-2025.png"
+          class="logo"
+          alt="Fanfaro Logo"
+        />
+        <div class="header-text">
+          <div class="header-title">FANFARO OIL FINDER</div>
+          <div class="header-sub">
+            Results based on your input and current Fanfaro product set.
+          </div>
+        </div>
+      </div>
+      <div class="step-pill">
+        Step 2 of 2 &nbsp;·&nbsp; Recommendations
+      </div>
+    </div>
 
-    <h1>FANFARO VOITELUAINEIDEN HAKUKONE</h1>
+    <!-- Pääkortti: vasen = syötteet + ajoneuvo, oikea = öljysuositukset -->
+    <div class="card">
+      <div class="card-main">
+        <h1>Oil recommendation – results</h1>
+        <p class="muted" style="margin-bottom:12px;">
+          Below you can see the data you entered and a placeholder for vehicle data
+          (API). On the right side you will find the matching Fanfaro oils.
+        </p>
 
-    <div class="cards">
-      <!-- Vasen kortti: syötetyt tiedot -->
-      <div class="card">
-        <h2>Syötetyt tiedot</h2>
+        <div class="section-label">Your input</div>
         <p id="rekRow"></p>
         <p id="visRow"></p>
         <p id="luaRow"></p>
         <p id="kayttoRow"></p>
 
-        <h2>Ajoneuvotiedot (API)</h2>
+        <h2>Vehicle data (API)</h2>
         <p class="muted" id="ajoneuvoInfo">
-          Ajoneuvo-API ei ole vielä kytketty. Tässä näytetään auton merkki/malli, kun backend on käytössä.
+          Ajoneuvo-API ei ole vielä kytketty. Tässä näytetään auton merkki/malli,
+          kun backend on käytössä (Traficom / OEM).
         </p>
 
-        <a class="back" href="index.html">&larr; Takaisin hakulomakkeelle</a>
+        <div class="info-box">
+          Later this area will be filled with technical vehicle data fetched
+          from Traficom (or OEM): make, model, engine, emission class, etc.
+          That data will be used to fine-tune the recommendation.
+        </div>
+
+        <a class="back" href="index.html">
+          <span>←</span> Back to search form
+        </a>
       </div>
 
-      <!-- Oikea kortti: suositellut öljyt -->
-      <div class="card">
-        <h2>Öljysuositukset</h2>
+      <div class="card-side">
+        <div class="side-title">Fanfaro oil suggestions</div>
+        <div class="side-sub">
+          Based on viscosity, oil classification and driving profile.
+        </div>
+
         <div id="suositukset"></div>
         <p class="muted" id="logiteksti"></p>
 
+        <div class="external-check">
+          You can optionally verify the recommendation against the manufacturer’s
+          official tool:<br />
+          <a href="https://sct-oilfinder.sct-germany.de/SCTOilfinder/index.php?LE=en&SPL=Fanfaro#Ref_Tabelle"
+             target="_blank" rel="noopener">
+            SCT Oilfinder – Fanfaro
+          </a>
+        </div>
+
         <div class="order-note">
-          Tilaa lähettämällä sähköposti osoitteeseen
-          <strong>info@esimerkki.fi</strong> ja kerro
-          rekisterinumero sekä valitsemasi tuotteen koodi
-          (esim. <span class="code">OIL-001</span>).
+          To order, please send an email to
+          <strong>info@esimerkki.fi</strong> and provide your licence plate
+          and the selected product code
+          (e.g. <span class="code">OIL-001</span>).
         </div>
 
         <div class="footer">
-          Aineisto sisältää Traficomin avointa ajoneuvodataa
-          (Ajoneuvojen avoin data, CC BY 4.0).<br>
-          Lähde: <a href="https://www.traficom.fi" target="_blank" rel="noopener">Traficom</a>.
-          Lisenssi: <a href="https://creativecommons.org/licenses/by/4.0/deed.fi" target="_blank" rel="noopener">
-          Creative Commons Nimeä 4.0</a>. Aineistoa on muokattu.
+          Contains Traficom open vehicle data (Ajoneuvojen avoin data, CC BY 4.0).<br />
+          Source: <a href="https://www.traficom.fi" target="_blank" rel="noopener">Traficom</a>.
+          Licence: <a href="https://creativecommons.org/licenses/by/4.0/deed.fi" target="_blank" rel="noopener">
+          Creative Commons Attribution 4.0</a>. Data has been modified.
         </div>
       </div>
     </div>
@@ -263,20 +429,23 @@
     }
 
     function naytaSyote(parametrit) {
-      document.getElementById("rekRow").innerText = "Rekisterinumero: " + (parametrit.rek || "-");
-      document.getElementById("visRow").innerText = "Viskositeetti: " + (parametrit.vis || "-");
-      document.getElementById("luaRow").innerText = "Luokitus: " + (parametrit.lua || "-");
+      document.getElementById("rekRow").innerText =
+        "Licence plate: " + (parametrit.rek || "-");
+      document.getElementById("visRow").innerText =
+        "Viscosity: " + (parametrit.vis || "-");
+      document.getElementById("luaRow").innerText =
+        "Classification: " + (parametrit.lua || "-");
 
-      let kayttoTeksti = "Käyttöprofiili: ";
+      let kayttoTeksti = "Driving profile: ";
       switch (parametrit.kaytto) {
         case "normaali":
-          kayttoTeksti += "Normaali ajo"; break;
+          kayttoTeksti += "Normal driving"; break;
         case "kaupunki":
-          kayttoTeksti += "Kaupunkiajo"; break;
+          kayttoTeksti += "City traffic"; break;
         case "pitka":
-          kayttoTeksti += "Pitkät ajomatkat"; break;
+          kayttoTeksti += "Long distance"; break;
         case "raskas":
-          kayttoTeksti += "Raskas käyttö"; break;
+          kayttoTeksti += "Heavy duty / towing"; break;
         default:
           kayttoTeksti += "-";
       }
@@ -289,13 +458,18 @@
       const kaytto = parametrit.kaytto;
 
       let suositukset = TUOTTEET.filter(o => {
-        const visMatch = o.viskositeetti.toUpperCase().replace(/\s+/g, "") === visInput;
-        const luaMatch = luaInput ? o.luokitus.toUpperCase().includes(luaInput) : true;
+        const visMatch =
+          o.viskositeetti.toUpperCase().replace(/\s+/g, "") === visInput;
+        const luaMatch = luaInput
+          ? o.luokitus.toUpperCase().includes(luaInput)
+          : true;
         return visMatch && luaMatch;
       });
 
       if (kaytto && suositukset.length > 0) {
-        const profFiltered = suositukset.filter(o => o.profiilit.includes(kaytto));
+        const profFiltered = suositukset.filter(o =>
+          o.profiilit.includes(kaytto)
+        );
         if (profFiltered.length > 0) suositukset = profFiltered;
       }
 
@@ -303,9 +477,10 @@
       cont.innerHTML = "";
 
       if (suositukset.length === 0) {
-        cont.innerHTML = "<p>Syötteillä ei löytynyt valmista suositusta. Voit tarkentaa hakua tai laajentaa valikoimaa.</p>";
+        cont.innerHTML =
+          "<p>No exact match found for the given input. You can adjust the search or extend the product list.</p>";
         document.getElementById("logiteksti").innerText =
-          "Vinkki: lisää tuotteita TUOTTEET-taulukkoon tai höllennä suodatuslogiikkaa.";
+          "Tip: add more products to the TUOTTEET array or relax the filtering logic.";
         return;
       }
 
@@ -317,7 +492,7 @@
           <div>
             <span class="tag">${o.viskositeetti}</span>
             <span class="tag">${o.luokitus}</span>
-            ${kaytto ? `<span class="pill">Sopii profiilille: ${kaytto}</span>` : ""}
+            ${kaytto ? `<span class="pill">Profile: ${kaytto}</span>` : ""}
           </div>
           <p>${o.kuvaus}</p>
           <p class="price">${o.hinta}</p>
@@ -326,7 +501,7 @@
       });
 
       document.getElementById("logiteksti").innerText =
-        "Tämä on esimerkkituotelista. Voit muokata TUOTTEET-taulukkoa oman varastosi mukaan.";
+        "This is a demo product list. You can freely edit the TUOTTEET array to match your actual Fanfaro inventory.";
     }
 
     (function init() {
