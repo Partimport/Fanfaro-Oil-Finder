@@ -10,225 +10,470 @@
     body {
       margin: 0;
       padding: 0;
-      background-color: #F4FBF6;
-      font-family: Arial, sans-serif;
       min-height: 100vh;
+      background: #f3f4f6;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+        Roboto, Helvetica, Arial, sans-serif;
       display: flex;
       justify-content: center;
-      align-items: flex-start;
-      padding-top: 40px;
+      align-items: center;
     }
 
-    .topbar {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      background: #00572C;
-      color: #FECF00;
-      padding: 8px 16px;
-      font-size: 13px;
-      font-weight: 600;
-      text-align: center;
-      z-index: 10;
+    .page {
+      width: 100%;
+      max-width: 960px;
+      padding: 24px 16px;
+    }
+
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 18px;
+      gap: 12px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
     }
 
     .logo {
       display: block;
-      width: 180px;
-      margin: 0 auto 6px auto;
+      width: 150px;
+      height: auto;
     }
 
-    .logo-error {
-      text-align: center;
+    .header-text {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .header-title {
+      font-size: 14px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #374151;
+      font-weight: 700;
+    }
+
+    .header-sub {
+      font-size: 13px;
+      color: #6b7280;
+    }
+
+    .step-pill {
       font-size: 12px;
-      color: #b00;
-      margin-bottom: 14px;
-      display: none;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: #e5f4ea;
+      color: #065f46;
+      font-weight: 600;
+      white-space: nowrap;
     }
 
     .card {
-      width: 100%;
-      max-width: 480px;
-      padding: 24px 22px 26px;
-      border-radius: 14px;
-      border: 1px solid #dfeee2;
       background: #ffffff;
-      box-shadow: 0 4px 18px rgba(0,0,0,0.06);
-      margin: 0 16px 32px;
+      border-radius: 18px;
+      box-shadow:
+        0 18px 45px rgba(15, 23, 42, 0.18),
+        0 1px 2px rgba(15, 23, 42, 0.10);
+      padding: 24px 24px 22px;
+      border: 1px solid #e5e7eb;
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+      gap: 24px;
+    }
+
+    .card-main {
+      border-right: 1px solid #f3f4f6;
+      padding-right: 18px;
+    }
+
+    .card-side {
+      padding-left: 4px;
+    }
+
+    @media (max-width: 800px) {
+      .card {
+        grid-template-columns: 1fr;
+        padding: 20px 18px 18px;
+      }
+      .card-main {
+        border-right: none;
+        border-bottom: 1px solid #f3f4f6;
+        padding-right: 0;
+        padding-bottom: 16px;
+        margin-bottom: 6px;
+      }
+      .card-side {
+        padding-left: 0;
+      }
+      .header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .page {
+        padding-top: 16px;
+        padding-bottom: 16px;
+      }
     }
 
     h1 {
       font-size: 22px;
-      margin: 0 0 12px 0;
-      text-align: center;
-      color: #00572C;
+      margin: 0 0 6px 0;
+      color: #111827;
       font-weight: 800;
     }
 
-    p.sub {
+    .sub {
       margin: 0 0 20px 0;
-      text-align: center;
-      color: #444;
+      color: #6b7280;
       font-size: 14px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px 18px;
+    }
+
+    @media (max-width: 640px) {
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
     }
 
     .form-group {
-      margin-bottom: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
     }
 
     label {
-      display: block;
-      margin-bottom: 4px;
-      font-weight: bold;
+      font-weight: 600;
       font-size: 13px;
-      color: #00572C;
+      color: #374151;
     }
 
-    input, select {
+    .hint {
+      font-size: 11px;
+      color: #9ca3af;
+    }
+
+    input,
+    select {
       width: 100%;
-      padding: 10px 11px;
-      border-radius: 6px;
-      border: 1px solid #bbb;
+      padding: 9px 11px;
+      border-radius: 8px;
+      border: 1px solid #d1d5db;
       font-size: 14px;
+      color: #111827;
+      background: #f9fafb;
+      transition: border-color 0.12s ease, box-shadow 0.12s ease,
+        background-color 0.12s ease;
+    }
+
+    input::placeholder,
+    select::placeholder {
+      color: #9ca3af;
+    }
+
+    input:focus,
+    select:focus {
+      outline: none;
+      border-color: #059669;
+      background: #ffffff;
+      box-shadow: 0 0 0 1px #05966933;
+    }
+
+    .actions {
+      margin-top: 18px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      justify-content: flex-start;
     }
 
     button {
-      width: 100%;
-      margin-top: 16px;
-      padding: 12px 16px;
-      border-radius: 8px;
+      padding: 11px 22px;
+      border-radius: 999px;
       border: none;
-      background-color: #00572C;
-      color: #fff;
-      font-size: 16px;
+      background: linear-gradient(135deg, #059669, #047857);
+      color: #ffffff;
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: 0.01em;
       cursor: pointer;
-      font-weight: bold;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow:
+        0 10px 20px rgba(5, 150, 105, 0.35),
+        0 1px 2px rgba(15, 23, 42, 0.15);
+      transition: transform 0.08s ease, box-shadow 0.08s ease,
+        filter 0.08s ease;
     }
 
-    button:hover { background-color: #008444; }
+    button span.icon {
+      font-size: 17px;
+      transform: translateY(1px);
+    }
+
+    button:hover {
+      transform: translateY(-1px);
+      box-shadow:
+        0 14px 30px rgba(5, 150, 105, 0.42),
+        0 2px 4px rgba(15, 23, 42, 0.18);
+      filter: brightness(1.03);
+    }
+
+    button:active {
+      transform: translateY(0);
+      box-shadow:
+        0 8px 18px rgba(5, 150, 105, 0.32),
+        0 1px 3px rgba(15, 23, 42, 0.2);
+    }
+
+    .secondary-note {
+      font-size: 12px;
+      color: #6b7280;
+    }
+
+    .secondary-note strong {
+      color: #111827;
+    }
+
+    .side-title {
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #6b7280;
+      margin-bottom: 6px;
+    }
+
+    .side-box {
+      border-radius: 14px;
+      background: #f9fafb;
+      border: 1px dashed #d1d5db;
+      padding: 10px 12px;
+      font-size: 12px;
+      color: #4b5563;
+      margin-bottom: 10px;
+    }
+
+    .side-box ul {
+      padding-left: 18px;
+      margin: 6px 0 0 0;
+    }
+
+    .side-box li {
+      margin-bottom: 2px;
+    }
+
+    .side-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 7px;
+      border-radius: 999px;
+      background: #ecfdf3;
+      border: 1px solid #bbf7d0;
+      font-size: 11px;
+      color: #166534;
+      margin-bottom: 6px;
+    }
 
     .footnote {
       margin-top: 12px;
       font-size: 11px;
-      color: #666;
-      text-align: center;
+      color: #6b7280;
     }
 
     .footer {
-      margin-top: 18px;
+      margin-top: 16px;
       font-size: 11px;
-      color: #777;
-      text-align: center;
+      color: #9ca3af;
+      text-align: left;
       line-height: 1.4;
     }
     .footer a {
-      color: #555;
+      color: #6b7280;
       text-decoration: none;
     }
     .footer a:hover {
       text-decoration: underline;
     }
-
-    @media (max-width: 600px) {
-      body {
-        align-items: flex-start;
-        padding-top: 56px;
-      }
-      .card {
-        margin: 0 10px 24px;
-        padding: 20px 18px 22px;
-      }
-      h1 {
-        font-size: 20px;
-      }
-      p.sub {
-        font-size: 13px;
-      }
-      button {
-        font-size: 15px;
-        padding: 11px 14px;
-      }
-    }
   </style>
 </head>
 <body>
-  <div class="topbar">
-    FANFARO – voiteluaineiden hakukone (beta)
-  </div>
-
-  <div>
-    <!-- FANFARO LOGO (ibb.co:n suora kuvapolku) -->
-    <img
-      src="https://i.ibb.co/08yJmdj/Fanfaro-logo-2-27-11-2025.png"
-      class="logo"
-      alt="Fanfaro Logo"
-      id="fanfaroLogo"
-    >
-    <div id="logoError" class="logo-error">
-      Logo ei latautunut (URL ei toimi tai yhteys estetty).
+  <div class="page">
+    <!-- Yläosa: logo + pieni otsikko + step-pill -->
+    <div class="header">
+      <div class="brand">
+        <img
+          src="https://i.ibb.co/08yJmdj/Fanfaro-logo-2-27-11-2025.png"
+          class="logo"
+          alt="Fanfaro Logo"
+        />
+        <div class="header-text">
+          <div class="header-title">FANFARO OIL FINDER</div>
+          <div class="header-sub">
+            Find the correct Fanfaro lubricant based on your vehicle and oil specification.
+          </div>
+        </div>
+      </div>
+      <div class="step-pill">
+        Step 1 of 2 &nbsp;·&nbsp; Vehicle &amp; oil preferences
+      </div>
     </div>
 
+    <!-- Pääkortti -->
     <div class="card">
-      <h1>FANFARO VOITELUAINEIDEN HAKUKONE</h1>
-      <p class="sub">Syötä tiedot, niin näytämme sopivat Fanfaro-öljyt.</p>
+      <div class="card-main">
+        <h1>Oil recommendation for your vehicle</h1>
+        <p class="sub">
+          Fill in at least the <strong>viscosity</strong> and oil
+          <strong>classification</strong>. If you know the licence plate,
+          you can add it as well.
+        </p>
 
-      <form id="hakulomake">
-        <div class="form-group">
-          <label for="rekisterinumero">Anna rekisterinumero</label>
-          <input type="text" id="rekisterinumero" name="rekisterinumero" placeholder="ABC-123" />
+        <form id="hakulomake">
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="rekisterinumero">Licence plate (optional)</label>
+              <input
+                type="text"
+                id="rekisterinumero"
+                name="rekisterinumero"
+                placeholder="ABC-123"
+              />
+              <div class="hint">
+                Used later to connect to the vehicle register (Traficom / OEM).
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="viskositeetti">Viscosity (required)</label>
+              <input
+                type="text"
+                id="viskositeetti"
+                name="viskositeetti"
+                placeholder="e.g. 5W-30"
+                required
+              />
+              <div class="hint">
+                SAE-grade, for example <strong>0W-20</strong>, <strong>5W-30</strong> or
+                <strong>5W-40</strong>.
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="luokitus">Oil classification</label>
+              <input
+                type="text"
+                id="luokitus"
+                name="luokitus"
+                placeholder="e.g. ACEA C3, API SP"
+              />
+              <div class="hint">
+                ACEA / API or OEM-approval, if known (for example ACEA C3).
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="kaytto">Driving profile</label>
+              <select id="kaytto" name="kaytto">
+                <option value="">No specific preference</option>
+                <option value="normaali">Normal driving</option>
+                <option value="kaupunki">City / stop &amp; go</option>
+                <option value="pitka">Long distance</option>
+                <option value="raskas">Heavy duty / towing</option>
+              </select>
+              <div class="hint">
+                Helps to prioritise products (economy, long life, heavy duty).
+              </div>
+            </div>
+          </div>
+
+          <div class="actions">
+            <button type="submit">
+              <span class="icon">➜</span>
+              Show Fanfaro recommendation
+            </button>
+            <div class="secondary-note">
+              <strong>Next step:</strong> we will show 1–3 matching Fanfaro oils,
+              and you can verify them against SCT Oilfinder if needed.
+            </div>
+          </div>
+
+          <div class="footnote">
+            Step 1/2 – on the next page you will see the oil recommendations.
+          </div>
+        </form>
+
+        <div class="footer">
+          The service will later be connected to vehicle data from Traficom
+          and SCT Lubricants. Data may be approximate for demo use.
+          <br />
+          Contains Traficom open vehicle data (Ajoneuvojen avoin data, CC BY 4.0).<br />
+          Source: <a href="https://www.traficom.fi" target="_blank" rel="noopener">Traficom</a>.
+          Licence: <a href="https://creativecommons.org/licenses/by/4.0/deed.fi" target="_blank" rel="noopener">
+          Creative Commons Attribution 4.0</a>. Data has been modified.
         </div>
-
-        <div class="form-group">
-          <label for="viskositeetti">Anna viskositeetti</label>
-          <input type="text" id="viskositeetti" name="viskositeetti" placeholder="esim. 5W-30" required />
-        </div>
-
-        <div class="form-group">
-          <label for="luokitus">Anna luokitus</label>
-          <input type="text" id="luokitus" name="luokitus" placeholder="esim. ACEA C3" />
-        </div>
-
-        <div class="form-group">
-          <label for="kaytto">Käyttöprofiili (valinnainen)</label>
-          <select id="kaytto" name="kaytto">
-            <option value="">– ei valintaa –</option>
-            <option value="normaali">Normaali ajo</option>
-            <option value="kaupunki">Kaupunkiajo</option>
-            <option value="pitka">Pitkät ajomatkat</option>
-            <option value="raskas">Raskas käyttö</option>
-          </select>
-        </div>
-
-        <button type="submit">Hae öljysuositus</button>
-      </form>
-
-      <div class="footnote">
-        Vaihe 1/2 – seuraavalla sivulla näytetään öljysuositukset.
       </div>
 
-      <div class="footer">
-        Aineisto sisältää Traficomin avointa ajoneuvodataa
-        (Ajoneuvojen avoin data, CC BY 4.0).<br>
-        Lähde: <a href="https://www.traficom.fi" target="_blank" rel="noopener">Traficom</a>.
-        Lisenssi: <a href="https://creativecommons.org/licenses/by/4.0/deed.fi" target="_blank" rel="noopener">
-        Creative Commons Nimeä 4.0</a>. Aineistoa on muokattu.
+      <!-- Sivupaneeli: selitys ja “luottamus”-elementit -->
+      <div class="card-side">
+        <div class="side-title">How this tool works</div>
+
+        <div class="side-box">
+          <div class="side-badge">
+            <span>🔍</span> Matching logic (beta)
+          </div>
+          <ul>
+            <li>You enter viscosity and oil classification.</li>
+            <li>The tool filters suitable Fanfaro products.</li>
+            <li>Driving profile fine-tunes the recommendation.</li>
+            <li>Later: licence plate will connect to vehicle data.</li>
+          </ul>
+        </div>
+
+        <div class="side-box">
+          <div class="side-badge">
+            <span>✅</span> Verification against SCT Oilfinder
+          </div>
+          <p style="margin-top:4px;">
+            Recommendations are designed to align with the official SCT / Fanfaro
+            Oilfinder. If needed, you can verify them directly in the
+            manufacturer’s tool.
+          </p>
+          <p style="margin-top:6px; font-size:11px;">
+            Link: <a href="https://sct-oilfinder.sct-germany.de/SCTOilfinder/index.php?LE=en&SPL=Fanfaro#Ref_Tabelle"
+                    target="_blank" rel="noopener">
+              SCT Oilfinder – Fanfaro
+            </a>
+          </p>
+        </div>
+
+        <div class="side-box">
+          <div class="side-badge">
+            <span>🛢</span> Why Fanfaro?
+          </div>
+          <p style="margin-top:4px;">
+            Fanfaro offers a full range of modern lubricants with ACEA and API
+            approvals, suitable for both passenger cars and light commercial
+            vehicles.
+          </p>
+        </div>
       </div>
     </div>
   </div>
 
   <script>
-    // Logo-debug: näytetään teksti, jos logo ei lataudu
-    const logo = document.getElementById("fanfaroLogo");
-    const logoError = document.getElementById("logoError");
-
-    if (logo) {
-      logo.addEventListener("error", function () {
-        logo.style.display = "none";
-        logoError.style.display = "block";
-      });
-    }
-
     document.getElementById("hakulomake").addEventListener("submit", function (e) {
       e.preventDefault();
       const rek = document.getElementById("rekisterinumero").value.trim();
