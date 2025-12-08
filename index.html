@@ -320,31 +320,30 @@
           alt="Fanfaro Logo"
         />
         <div class="header-text">
-          <div class="header-title">FANFARO OIL FINDER</div>
+          <div class="header-title">FANFARO VOITELUAINEIDEN HAKUKONE</div>
           <div class="header-sub">
-            Find the correct Fanfaro lubricant based on your vehicle and oil specification.
+            Löydä oikea Fanfaro-voiteluaine ajoneuvosi ja öljymääritysten perusteella.
           </div>
         </div>
       </div>
       <div class="step-pill">
-        Step 1 of 2 &nbsp;·&nbsp; Vehicle &amp; oil preferences
+        Vaihe 1 / 2 &nbsp;·&nbsp; Ajoneuvon ja öljyn tiedot
       </div>
     </div>
 
     <!-- Pääkortti -->
     <div class="card">
       <div class="card-main">
-        <h1>Oil recommendation for your vehicle</h1>
+        <h1>Öljysuositus ajoneuvollesi</h1>
         <p class="sub">
-          Fill in at least the <strong>viscosity</strong> and oil
-          <strong>classification</strong>. If you know the licence plate,
-          you can add it as well.
+          Täytä vähintään <strong>viskositeetti</strong> ja öljyn
+          <strong>luokitus</strong>. Jos tiedät rekisterinumeron, voit lisätä sen myös.
         </p>
 
         <form id="hakulomake">
           <div class="form-grid">
             <div class="form-group">
-              <label for="rekisterinumero">Licence plate (optional)</label>
+              <label for="rekisterinumero">Rekisterinumero (valinnainen)</label>
               <input
                 type="text"
                 id="rekisterinumero"
@@ -352,49 +351,49 @@
                 placeholder="ABC-123"
               />
               <div class="hint">
-                Used later to connect to the vehicle register (Traficom / OEM).
+                Käytetään myöhemmin ajoneuvotietojen hakuun (Traficom / valmistaja).
               </div>
             </div>
 
             <div class="form-group">
-              <label for="viskositeetti">Viscosity (required)</label>
+              <label for="viskositeetti">Viskositeetti (pakollinen)</label>
               <input
                 type="text"
                 id="viskositeetti"
                 name="viskositeetti"
-                placeholder="e.g. 5W-30"
+                placeholder="esim. 5W-30"
                 required
               />
               <div class="hint">
-                SAE-grade, for example <strong>0W-20</strong>, <strong>5W-30</strong> or
+                SAE-luokka, esimerkiksi <strong>0W-20</strong>, <strong>5W-30</strong> tai
                 <strong>5W-40</strong>.
               </div>
             </div>
 
             <div class="form-group">
-              <label for="luokitus">Oil classification</label>
+              <label for="luokitus">Öljyluokitus</label>
               <input
                 type="text"
                 id="luokitus"
                 name="luokitus"
-                placeholder="e.g. ACEA C3, API SP"
+                placeholder="esim. ACEA C3, API SP"
               />
               <div class="hint">
-                ACEA / API or OEM-approval, if known (for example ACEA C3).
+                ACEA / API tai valmistajan oma hyväksyntä, jos tiedossa (esim. ACEA C3).
               </div>
             </div>
 
             <div class="form-group">
-              <label for="kaytto">Driving profile</label>
+              <label for="kaytto">Käyttöprofiili</label>
               <select id="kaytto" name="kaytto">
-                <option value="">No specific preference</option>
-                <option value="normaali">Normal driving</option>
-                <option value="kaupunki">City / stop &amp; go</option>
-                <option value="pitka">Long distance</option>
-                <option value="raskas">Heavy duty / towing</option>
+                <option value="">Ei erityistä painotusta</option>
+                <option value="normaali">Normaali ajo</option>
+                <option value="kaupunki">Kaupunkiajo / stop &amp; go</option>
+                <option value="pitka">Pitkät ajomatkat</option>
+                <option value="raskas">Raskas käyttö / veto</option>
               </select>
               <div class="hint">
-                Helps to prioritise products (economy, long life, heavy duty).
+                Auttaa painottamaan tuotteita (taloudellisuus, pitkät vaihtovälit, raskas käyttö).
               </div>
             </div>
           </div>
@@ -402,57 +401,57 @@
           <div class="actions">
             <button type="submit">
               <span class="icon">➜</span>
-              Show Fanfaro recommendation
+              Näytä Fanfaro-öljysuositus
             </button>
             <div class="secondary-note">
-              <strong>Next step:</strong> we will show 1–3 matching Fanfaro oils,
-              and you can verify them against SCT Oilfinder if needed.
+              <strong>Seuraava vaihe:</strong> näytämme 1–3 sopivaa Fanfaro-öljyä,
+              ja halutessasi voit tarkistaa ne SCT Oilfinderista.
             </div>
           </div>
 
           <div class="footnote">
-            Step 1/2 – on the next page you will see the oil recommendations.
+            Vaihe 1/2 – seuraavalla sivulla näytetään öljysuositukset.
           </div>
         </form>
 
         <div class="footer">
-          The service will later be connected to vehicle data from Traficom
-          and SCT Lubricants. Data may be approximate for demo use.
+          Palvelu liitetään myöhemmin Traficomin ja SCT Lubricantsin ajoneuvo- ja tuotedataan.
+          Demon tarkoituksessa tiedot voivat olla suuntaa-antavia.
           <br />
-          Contains Traficom open vehicle data (Ajoneuvojen avoin data, CC BY 4.0).<br />
-          Source: <a href="https://www.traficom.fi" target="_blank" rel="noopener">Traficom</a>.
-          Licence: <a href="https://creativecommons.org/licenses/by/4.0/deed.fi" target="_blank" rel="noopener">
-          Creative Commons Attribution 4.0</a>. Data has been modified.
+          Aineisto sisältää Traficomin avointa ajoneuvodataa
+          (Ajoneuvojen avoin data, CC BY 4.0).<br />
+          Lähde: <a href="https://www.traficom.fi" target="_blank" rel="noopener">Traficom</a>.
+          Lisenssi: <a href="https://creativecommons.org/licenses/by/4.0/deed.fi" target="_blank" rel="noopener">
+          Creative Commons Nimeä 4.0</a>. Aineistoa on muokattu.
         </div>
       </div>
 
       <!-- Sivupaneeli: selitys ja “luottamus”-elementit -->
       <div class="card-side">
-        <div class="side-title">How this tool works</div>
+        <div class="side-title">Miten hakukone toimii</div>
 
         <div class="side-box">
           <div class="side-badge">
-            <span>🔍</span> Matching logic (beta)
+            <span>🔍</span> Sovituslogiikka (beta)
           </div>
           <ul>
-            <li>You enter viscosity and oil classification.</li>
-            <li>The tool filters suitable Fanfaro products.</li>
-            <li>Driving profile fine-tunes the recommendation.</li>
-            <li>Later: licence plate will connect to vehicle data.</li>
+            <li>Syötät viskositeetin ja öljyluokituksen.</li>
+            <li>Työkalu suodattaa sopivat Fanfaro-tuotteet.</li>
+            <li>Käyttöprofiili tarkentaa suositusta.</li>
+            <li>Myöhemmin: rekisterinumero kytkee suoraan ajoneuvotietoihin.</li>
           </ul>
         </div>
 
         <div class="side-box">
           <div class="side-badge">
-            <span>✅</span> Verification against SCT Oilfinder
+            <span>✅</span> Tarkistus SCT Oilfinderista
           </div>
           <p style="margin-top:4px;">
-            Recommendations are designed to align with the official SCT / Fanfaro
-            Oilfinder. If needed, you can verify them directly in the
-            manufacturer’s tool.
+            Suositukset on tarkoitettu vastaamaan SCT / Fanfaro Oilfinderin linjaa.
+            Halutessasi voit varmistaa valinnan valmistajan omasta hakukoneesta.
           </p>
           <p style="margin-top:6px; font-size:11px;">
-            Link: <a href="https://sct-oilfinder.sct-germany.de/SCTOilfinder/index.php?LE=en&SPL=Fanfaro#Ref_Tabelle"
+            Linkki: <a href="https://sct-oilfinder.sct-germany.de/SCTOilfinder/index.php?LE=en&SPL=Fanfaro#Ref_Tabelle"
                     target="_blank" rel="noopener">
               SCT Oilfinder – Fanfaro
             </a>
@@ -461,12 +460,11 @@
 
         <div class="side-box">
           <div class="side-badge">
-            <span>🛢</span> Why Fanfaro?
+            <span>🛢</span> Miksi Fanfaro?
           </div>
           <p style="margin-top:4px;">
-            Fanfaro offers a full range of modern lubricants with ACEA and API
-            approvals, suitable for both passenger cars and light commercial
-            vehicles.
+            Fanfaro tarjoaa laajan valikoiman moderneja voiteluaineita ACEA- ja API-luokituksilla
+            henkilöautoihin ja kevyisiin hyötyajoneuvoihin.
           </p>
         </div>
       </div>
