@@ -96,8 +96,63 @@
     }
 
     @media (max-width: 800px) {
+      .page {
+        padding: 16px 12px;
+      }
+
       .card {
         grid-template-columns: 1fr;
         padding: 20px 18px 18px;
       }
-      .card-ma
+
+      .card-main {
+        border-right: none;
+        border-bottom: 1px solid #f3f4f6;
+        padding-right: 0;
+        padding-bottom: 16px;
+        margin-bottom: 8px;
+      }
+
+      .card-side {
+        padding-left: 0;
+      }
+
+      .header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .step-pill {
+        align-self: flex-start;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header class="header">
+      <div class="brand">
+        <!-- vaihda logo.png oikeaan polkuun -->
+        <img src="logo.png" alt="FANFARO-logo" class="logo" />
+        <div class="header-text">
+          <div class="header-title">Voiteluaineiden hakukone</div>
+          <div class="header-sub">Tulossivu (esimerkki-layout)</div>
+        </div>
+      </div>
+      <div class="step-pill">Vaihe 3 · Tulokset</div>
+    </header>
+
+    <main class="card">
+      <section class="card-main">
+        <h1>Hakutulokset</h1>
+        <p>Tähän voit tulostaa hakukoneen tulokset (tuotenimi, viskositeetti, jne.).</p>
+      </section>
+
+      <aside class="card-side">
+        <h2>Yhteenveto</h2>
+        <p>Tähän esimerkiksi valitut suodattimet, auton tiedot tai lisäohjeet.</p>
+      </aside>
+    </main>
+  </div>
+</body>
+</html>
