@@ -367,6 +367,7 @@
 
         <div class="section-label">Syöttämäsi tiedot</div>
         <p id="rekRow"></p>
+        <p id="vmRow"></p>
         <p id="visRow"></p>
         <p id="luaRow"></p>
         <p id="kayttoRow"></p>
@@ -422,7 +423,8 @@
 
         <div class="order-note">
           Tilataksesi lähetä sähköposti osoitteeseen
-          <strong>info@esimerkki.fi</strong> ja kerro rekisterinumero
+          <strong>info@esimerkki.fi</strong> ja kerro
+          <strong>rekisterinumero tai auton merkki ja vuosimalli</strong>
           sekä valitsemasi tuotteen koodi
           (esim. <span class="code">OIL-001</span>).
         </div>
@@ -486,7 +488,8 @@
     function haeParametrit() {
       const params = new URLSearchParams(window.location.search);
       return {
-        rek: params.get("rek") || "",
+        rek: params.get("rek") || "",   // tässä on auton merkki
+        vm: params.get("vm") || "",     // vuosimalli
         vis: params.get("vis") || "",
         lua: params.get("lua") || "",
         kaytto: params.get("kaytto") || ""
@@ -495,7 +498,9 @@
 
     function naytaSyote(parametrit) {
       document.getElementById("rekRow").innerText =
-        "Rekisterinumero: " + (parametrit.rek || "-");
+        "Auton merkki: " + (parametrit.rek || "-");
+      document.getElementById("vmRow").innerText =
+        "Vuosimalli: " + (parametrit.vm || "-");
       document.getElementById("visRow").innerText =
         "Viskositeetti: " + (parametrit.vis || "-");
       document.getElementById("luaRow").innerText =
