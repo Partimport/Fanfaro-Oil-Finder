@@ -338,13 +338,12 @@
         <p class="sub">
           Täytä vähintään <strong>viskositeetti</strong> ja öljyn
           <strong>luokitus</strong>. Voit halutessasi lisätä myös
-          <strong>automerkin</strong>.
+          <strong>automerkin</strong> ja <strong>vuosimallin</strong>.
         </p>
 
         <form id="hakulomake">
           <div class="form-grid">
-            <!-- HUOM: kentän tekninen nimi säilyy rekisterinumero,
-                 mutta sisältö on nyt auton merkki -->
+            <!-- Auton merkki (tekninen nimi sama kuin ennen, jotta Tulokset.html toimii) -->
             <div class="form-group">
               <label for="rekisterinumero">Auton merkki (valinnainen)</label>
               <input
@@ -354,7 +353,23 @@
                 placeholder="esim. Ford, BMW, Toyota"
               />
               <div class="hint">
-                Käytetään jatkossa automerkkikohtaiseen öljysuosituslogiikkaan.
+                Käytetään automerkkikohtaiseen öljysuosituslogiikkaan.
+              </div>
+            </div>
+
+            <!-- Vuosimalli -->
+            <div class="form-group">
+              <label for="vuosimalli">Vuosimalli (valinnainen)</label>
+              <input
+                type="number"
+                id="vuosimalli"
+                name="vuosimalli"
+                placeholder="esim. 2015"
+                min="1970"
+                max="2035"
+              />
+              <div class="hint">
+                Auttaa valitsemaan oikean OEM-luokituksen (esim. vanhemmat vs. uudemmat moottorit).
               </div>
             </div>
 
@@ -439,9 +454,9 @@
           </div>
           <ul>
             <li>Syötät viskositeetin ja öljyluokituksen.</li>
-            <li>Voit antaa myös auton merkin, jolloin logiikkaa voidaan tarkentaa.</li>
+            <li>Voit antaa myös auton merkin ja vuosimallin.</li>
             <li>Työkalu suodattaa sopivat Fanfaro-tuotteet.</li>
-            <li>Myöhemmin: ajoneuvotiedot (Traficom / valmistaja) tarkentavat suositusta.</li>
+            <li>Myöhemmin: vuosimalli + merkki → OEM-luokitus automaattisesti.</li>
           </ul>
         </div>
 
@@ -477,15 +492,17 @@
   <script>
     document.getElementById("hakulomake").addEventListener("submit", function (e) {
       e.preventDefault();
-      // HUOM: rekisterinumero-kentässä on nyt auton merkki
+      // "rekisterinumero"-kentässä on nyt auton merkki
       const merkki = document.getElementById("rekisterinumero").value.trim();
+      const vuosi = document.getElementById("vuosimalli").value.trim();
       const vis = document.getElementById("viskositeetti").value.trim();
       const lua = document.getElementById("luokitus").value.trim();
       const kaytto = document.getElementById("kaytto").value;
 
       const params = new URLSearchParams({
-        // Parametrin nimi on edelleen "rek", jotta Tulokset.html toimii kuten ennen
+        // rek = auton merkki (historiallisista syistä nimi säilytetty)
         rek: merkki,
+        vm: vuosi,
         vis: vis,
         lua: lua,
         kaytto: kaytto
