@@ -18,16 +18,4 @@
       📄 Energie Battery – Tuotetietoa / Produktinformation
     </a>
   </li>
-
-  <li>
-    <a href="https://raw.githubusercontent.com/Partimport/Fanfaro-Oil-Finder/Energie-Battery---Akkuasetus/Energie%20Battery%20K%C3%A4ytt%C3%B6opas%20-%20manual.pdf" target="_blank">
-      📄 Energie Battery – Käyttöopas / Manual
-    </a>
-  </li>
-
-  <li>
-    <a href="https://raw.githubusercontent.com/Partimport/Fanfaro-Oil-Finder/Energie-Battery---Akkuasetus/Asennusohje%20-%20Installation%20Guide.pdf" target="_blank">
-      📄 Asennusohje / Installation Guide
-    </a>
-  </li>
 </ul>
