@@ -1,584 +1,106 @@
-<!DOCTYPE html>
-<html lang="fi">
-<head>
-  <meta charset="UTF-8" />
-  <title>FANFARO Voiteluaineiden Hakukone – Tulokset</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <style>
-    * { box-sizing: border-box; }
+<script>
+  function normalizeToken(s) {
+    return (s || "")
+      .toLowerCase()
+      .replace(/å/g, "a").replace(/ä/g, "a").replace(/ö/g, "o")
+      .replace(/[^a-z0-9]+/g, ""); // poista välit ja erikoismerkit
+  }
 
-    body {
-      margin: 0;
-      padding: 0;
-      min-height: 100vh;
-      background: #f3f4f6;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
-        Roboto, Helvetica, Arial, sans-serif;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
+  function parseViscosity(vis) {
+    const m = (vis || "").toUpperCase().match(/^(\d+)W-(\d+)$/);
+    if (!m) return null;
+    return { w: Number(m[1]), hot: Number(m[2]) };
+  }
 
-    .page {
-      width: 100%;
-      max-width: 960px;
-      padding: 24px 16px;
-    }
+  function splitQueryTokens(text) {
+    // esim "VW 504 507 ACEA C3" -> ["vw","504","507","acea","c3","vw504","vw507","504507"]
+    const raw = (text || "").toLowerCase();
+    const parts = raw.split(/\s+/).filter(Boolean);
+    const basic = parts.map(normalizeToken).filter(Boolean);
 
-    .header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 18px;
-      gap: 12px;
-    }
+    // lisää yhdistelmät, jotka ovat käytännössä hyödyllisiä
+    const combos = [];
+    if (basic.includes("vw") && basic.includes("504") && basic.includes("507")) combos.push("vw504", "vw507", "504507");
+    if (basic.includes("acea") && basic.includes("c3")) combos.push("c3");
+    return Array.from(new Set([...basic, ...combos]));
+  }
 
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
+  function scoreProduct(product, qTokens) {
+    if (!qTokens.length) return 0;
 
-    .logo {
-      display: block;
-      width: 150px;
-      height: auto;
-    }
+    const tokenSet = new Set((product.tokens || []).map(normalizeToken));
+    let score = 0;
 
-    .header-text {
-      display: flex;
-      flex-direction: column;
-    }
-
-    .header-title {
-      font-size: 14px;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: #374151;
-      font-weight: 700;
-    }
-
-    .header-sub {
-      font-size: 13px;
-      color: #6b7280;
-    }
-
-    .step-pill {
-      font-size: 12px;
-      padding: 6px 10px;
-      border-radius: 999px;
-      background: #e5f4ea;
-      color: #065f46;
-      font-weight: 600;
-      white-space: nowrap;
-    }
-
-    .card {
-      background: #ffffff;
-      border-radius: 18px;
-      box-shadow:
-        0 18px 45px rgba(15, 23, 42, 0.18),
-        0 1px 2px rgba(15, 23, 42, 0.10);
-      padding: 24px 24px 22px;
-      border: 1px solid #e5e7eb;
-      display: grid;
-      grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
-      gap: 24px;
-    }
-
-    .card-main {
-      border-right: 1px solid #f3f4f6;
-      padding-right: 18px;
-    }
-
-    .card-side {
-      padding-left: 4px;
-    }
-
-    @media (max-width: 800px) {
-      .page {
-        padding: 16px 12px;
-      }
-
-      .card {
-        grid-template-columns: 1fr;
-        padding: 20px 18px 18px;
-      }
-
-      .card-main {
-        border-right: none;
-        border-bottom: 1px solid #f3f4f6;
-        padding-right: 0;
-        padding-bottom: 16px;
-        margin-bottom: 8px;
-      }
-
-      .card-side {
-        padding-left: 0;
-      }
-
-      .header {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-
-      .step-pill {
-        align-self: flex-start;
+    for (const t of qTokens) {
+      if (tokenSet.has(t)) score += 10;
+      // pieni “contains” jousto (esim. 22951 vs mb22951)
+      else {
+        for (const pt of tokenSet) {
+          if (pt.includes(t) || t.includes(pt)) { score += 3; break; }
+        }
       }
     }
 
-    h1 {
-      font-size: 22px;
-      margin: 0 0 6px 0;
-      color: #111827;
-      font-weight: 800;
+    // Pieni bonus, jos query sisältää ACEA/API ja tuote sisältää saman
+    const acea = normalizeToken(product.acea || "");
+    const api  = normalizeToken(product.api || "");
+    if (qTokens.includes("c3") && acea.includes("c3")) score += 8;
+    if (qTokens.includes("c2") && acea.includes("c2")) score += 8;
+    if (qTokens.includes("sp") && api.includes("sp")) score += 6;
+
+    return score;
+  }
+
+  async function main() {
+    const params = new URLSearchParams(location.search);
+    const vis = params.get("vis") || "";
+    const lua = params.get("lua") || "";
+    const merkki = params.get("rek") || "";
+    const q = `${lua} ${merkki}`.trim();
+
+    const v = parseViscosity(vis);
+    if (!v) {
+      document.getElementById("results").innerHTML =
+        "<p>Viskositeetti on virheellinen. Käytä muotoa 0W-20, 5W-30, 5W-40 jne.</p>";
+      return;
     }
 
-    h2 {
-      font-size: 16px;
-      margin: 16px 0 6px 0;
-      color: #111827;
-      font-weight: 700;
-    }
+    const res = await fetch("data/fanfaro_search_index.json");
+    const products = await res.json();
 
-    p {
-      margin: 4px 0;
-      font-size: 14px;
-      color: #444;
-    }
+    // 1) Viskositeetti ensin
+    const candidates = products.filter(p => Number(p.sae_w) === v.w && Number(p.sae_hot) === v.hot);
 
-    .muted {
-      color: #777;
-      font-size: 13px;
-    }
+    // 2) Vapaa teksti pisteytyksellä
+    const qTokens = splitQueryTokens(q);
+    const ranked = candidates
+      .map(p => ({ p, score: scoreProduct(p, qTokens) }))
+      .sort((a, b) => b.score - a.score);
 
-    .section-label {
-      font-size: 12px;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: #6b7280;
-      font-weight: 700;
-      margin-bottom: 4px;
-    }
+    // 3) Näytä top 3
+    const top = ranked.slice(0, 3).filter(x => x.score > 0);
+    const fallback = ranked.slice(0, 3); // jos query tyhjä/ei osumia
 
-    .info-box {
-      margin-top: 8px;
-      padding: 8px 10px;
-      border-radius: 10px;
-      background: #f9fafb;
-      border: 1px dashed #e5e7eb;
-      font-size: 12px;
-      color: #4b5563;
-    }
+    const finalList = top.length ? top : fallback;
 
-    .back {
-      display: inline-flex;
-      align-items: center;
-      margin-top: 12px;
-      font-size: 13px;
-      text-decoration: none;
-      color: #065f46;
-      font-weight: 600;
-    }
-    .back span {
-      font-size: 15px;
-      margin-right: 4px;
-    }
-    .back:hover { text-decoration: underline; }
-
-    /* Öljytuotekortit */
-    .tag {
-      display: inline-block;
-      padding: 4px 9px;
-      border-radius: 999px;
-      background: #E7F6EA;
-      border: 1px solid #C2E5CB;
-      font-size: 11px;
-      margin-right: 4px;
-      margin-top: 4px;
-      color: #00572C;
-      font-weight: 600;
-    }
-
-    .oil-item {
-      margin-bottom: 14px;
-      padding-bottom: 10px;
-      border-bottom: 1px dashed #e5e7eb;
-    }
-    .oil-item:last-child {
-      border-bottom: none;
-    }
-
-    .pill {
-      display: inline-block;
-      padding: 3px 8px;
-      border-radius: 999px;
-      background: #FECF00;
-      font-size: 11px;
-      color: #3C3C00;
-      margin-left: 4px;
-      font-weight: 600;
-    }
-
-    .price {
-      font-weight: bold;
-      margin-top: 4px;
-      color: #065f46;
-    }
-
-    .order-note {
-      margin-top: 14px;
-      padding-top: 10px;
-      border-top: 1px solid #e5e7eb;
-      font-size: 13px;
-      color: #374151;
-    }
-
-    .order-note strong {
-      color: #111827;
-    }
-
-    .code {
-      font-family: monospace;
-      font-size: 12px;
-      background: #F4FBF6;
-      padding: 2px 6px;
-      border-radius: 4px;
-    }
-
-    .footer {
-      margin-top: 16px;
-      font-size: 11px;
-      color: #9ca3af;
-      text-align: left;
-      line-height: 1.4;
-    }
-    .footer a {
-      color: #6b7280;
-      text-decoration: none;
-    }
-    .footer a:hover {
-      text-decoration: underline;
-    }
-
-    .external-check {
-      margin-top: 10px;
-      font-size: 12px;
-      color: #4b5563;
-    }
-    .external-check a {
-      color: #065f46;
-      font-weight: 600;
-      text-decoration: none;
-    }
-    .external-check a:hover {
-      text-decoration: underline;
-    }
-
-    .side-title {
-      font-size: 13px;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: #6b7280;
-      margin-bottom: 6px;
-    }
-
-    .side-sub {
-      font-size: 13px;
-      color: #6b7280;
-      margin-bottom: 8px;
-    }
-
-    /* Oilfinder-upotus */
-    .oilfinder-embed {
-      margin-top: 8px;
-      font-size: 12px;
-    }
-    .oilfinder-embed summary {
-      cursor: pointer;
-      list-style: none;
-      padding: 6px 8px;
-      border-radius: 8px;
-      background: #f3f4f6;
-      border: 1px solid #e5e7eb;
-      color: #374151;
-      font-weight: 600;
-    }
-    .oilfinder-embed summary::-webkit-details-marker {
-      display: none;
-    }
-    .oilfinder-embed summary::after {
-      content: "▾";
-      float: right;
-      font-size: 11px;
-      color: #6b7280;
-    }
-    .oilfinder-embed[open] summary::after {
-      content: "▴";
-    }
-    .oilfinder-frame-wrapper {
-      margin-top: 8px;
-    }
-    .oilfinder-frame {
-      width: 100%;
-      min-height: 520px;
-      border-radius: 12px;
-      border: 1px solid #d1d5db;
-      background: #ffffff;
-    }
-    @media (max-width: 800px) {
-      .oilfinder-frame {
-        min-height: 460px;
-      }
-    }
-  </style>
-</head>
-<body>
-  <div class="page">
-    <!-- Yläosa: logo + otsikko + step-pill -->
-    <div class="header">
-      <div class="brand">
-        <img
-          src="https://i.ibb.co/08yJmdj/Fanfaro-logo-2-27-11-2025.png"
-          class="logo"
-          alt="Fanfaro Logo"
-        />
-        <div class="header-text">
-          <div class="header-title">FANFARO VOITELUAINEIDEN HAKUKONE</div>
-          <div class="header-sub">
-            Tulokset syöttämiesi tietojen ja nykyisen Fanfaro-tuotevalikoiman perusteella.
-          </div>
+    const html = finalList.map(x => `
+      <div style="padding:12px;border:1px solid #e5e7eb;border-radius:12px;margin-bottom:10px;">
+        <div style="font-weight:800;color:#111827;">
+          ${x.p.brand} ${x.p.code} – ${x.p.name}
+        </div>
+        <div style="color:#374151;margin-top:4px;">
+          <strong>${x.p.sae}</strong> · ${x.p.acea || ""} ${x.p.api ? "· " + x.p.api : ""}
+        </div>
+        <div style="color:#6b7280;margin-top:6px;font-size:12px;">
+          OEM: ${x.p.oem || "-"}<br/>
+          SAPS: ${x.p.saps || "-"} · DPF: ${x.p.dpf || "-"}<br/>
+          Profile: ${x.p.technical_profile_id || "-"} · Score: ${x.score}
         </div>
       </div>
-      <div class="step-pill">
-        Vaihe 2 / 2 &nbsp;·&nbsp; Suositukset
-      </div>
-    </div>
+    `).join("");
 
-    <!-- Pääkortti: vasen = syötteet + ajoneuvo, oikea = öljysuositukset -->
-    <div class="card">
-      <div class="card-main">
-        <h1>Öljysuositus – tulokset</h1>
-        <p class="muted" style="margin-bottom:12px;">
-          Alla näet syöttämäsi tiedot sekä varauksen ajoneuvotiedoille (API).
-          Oikealla puolella ovat hakua vastaavat Fanfaro-öljyt.
-        </p>
+    document.getElementById("results").innerHTML = html || "<p>Ei tuloksia.</p>";
+  }
 
-        <div class="section-label">Syöttämäsi tiedot</div>
-        <p id="rekRow"></p>
-        <p id="vmRow"></p>
-        <p id="visRow"></p>
-        <p id="luaRow"></p>
-        <p id="kayttoRow"></p>
-
-        <h2>Ajoneuvotiedot (API)</h2>
-        <p class="muted" id="ajoneuvoInfo">
-          Ajoneuvo-API ei ole vielä kytketty. Tässä näytetään auton merkki/malli,
-          kun taustajärjestelmä on käytössä (Traficom / valmistaja).
-        </p>
-
-        <div class="info-box">
-          Myöhemmin tämä alue täytetään Traficomin (tai valmistajan)
-          ajoneuvotiedoilla: merkki, malli, moottori, päästöluokka jne.
-          Näitä tietoja käytetään suosituksen tarkentamiseen.
-        </div>
-
-        <a class="back" href="index.html">
-          <span>←</span> Takaisin hakulomakkeelle
-        </a>
-      </div>
-
-      <div class="card-side">
-        <div class="side-title">Fanfaro-öljysuositukset</div>
-        <div class="side-sub">
-          Perustuu viskositeettiin, öljyluokitukseen ja käyttöprofiiliin.
-        </div>
-
-        <div id="suositukset"></div>
-        <p class="muted" id="logiteksti"></p>
-
-        <div class="external-check">
-          Voit halutessasi tarkistaa suosituksen myös valmistajan
-          omasta hakukoneesta:<br />
-          <!-- Linkki uuteen välilehteen -->
-          <a href="https://sct-oilfinder.sct-germany.de/SCTOilfinder/index.php?LE=en&SPL=Fanfaro#"
-             target="_blank" rel="noopener">
-            SCT Oilfinder – Fanfaro (avaa uuteen ikkunaan)
-          </a>
-
-          <!-- Upotettu Oilfinder (iframe) -->
-          <details class="oilfinder-embed">
-            <summary>Avaa SCT Oilfinder tähän näkymään</summary>
-            <div class="oilfinder-frame-wrapper">
-              <iframe
-                class="oilfinder-frame"
-                src="https://sct-oilfinder.sct-germany.de/SCTOilfinder/index.php?LE=en&SPL=Fanfaro#"
-                loading="lazy"
-                title="SCT Oilfinder – Fanfaro"
-              ></iframe>
-            </div>
-          </details>
-        </div>
-
-        <div class="order-note">
-          Tilataksesi lähetä sähköposti osoitteeseen
-          <strong>info@esimerkki.fi</strong> ja kerro
-          <strong>rekisterinumero tai auton merkki ja vuosimalli</strong>
-          sekä valitsemasi tuotteen koodi
-          (esim. <span class="code">OIL-001</span>).
-        </div>
-
-        <div class="footer">
-          Aineisto sisältää Traficomin avointa ajoneuvodataa
-          (Ajoneuvojen avoin data, CC BY 4.0).<br />
-          Lähde: <a href="https://www.traficom.fi" target="_blank" rel="noopener">Traficom</a>.
-          Lisenssi: <a href="https://creativecommons.org/licenses/by/4.0/deed.fi" target="_blank" rel="noopener">
-          Creative Commons Nimeä 4.0</a>. Aineistoa on muokattu.
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <script>
-    // "Verkkokauppa-light": tuotteet JSON-taulukossa
-    const TUOTTEET = [
-      {
-        koodi: "OIL-001",
-        nimi: "Perus Öljy 5W-30 C3",
-        viskositeetti: "5W-30",
-        luokitus: "ACEA C3",
-        kuvaus: "Hyvä yleisöljy nykyaikaisiin bensiini- ja dieselmoottoreihin, joissa on hiukkassuodatin.",
-        profiilit: ["normaali", "kaupunki"],
-        hinta: "29,90 €",
-        linkki: ""
-      },
-      {
-        koodi: "OIL-002",
-        nimi: "Pitkäväli 0W-30 C2",
-        viskositeetti: "0W-30",
-        luokitus: "ACEA C2",
-        kuvaus: "Polttoainetta säästävä täyssynteettinen öljy pitkille huoltoväleille.",
-        profiilit: ["pitka"],
-        hinta: "34,90 €",
-        linkki: ""
-      },
-      {
-        koodi: "OIL-003",
-        nimi: "Raskas Käyttö 5W-40 A3/B4",
-        viskositeetti: "5W-40",
-        luokitus: "ACEA A3/B4",
-        kuvaus: "Soveltuu vanhempiin ja raskaasti kuormitettuihin moottoreihin.",
-        profiilit: ["raskas"],
-        hinta: "32,90 €",
-        linkki: ""
-      },
-      {
-        koodi: "OIL-004",
-        nimi: "Talvi Plus 0W-20",
-        viskositeetti: "0W-20",
-        luokitus: "API SP",
-        kuvaus: "Erinomainen kylmäkäynnistyksiin ja nykyaikaisiin bensiinimoottoreihin.",
-        profiilit: ["kaupunki", "normaali"],
-        hinta: "36,90 €",
-        linkki: ""
-      }
-    ];
-
-    function haeParametrit() {
-      const params = new URLSearchParams(window.location.search);
-      return {
-        rek: params.get("rek") || "",   // tässä on auton merkki
-        vm: params.get("vm") || "",     // vuosimalli
-        vis: params.get("vis") || "",
-        lua: params.get("lua") || "",
-        kaytto: params.get("kaytto") || ""
-      };
-    }
-
-    function naytaSyote(parametrit) {
-      document.getElementById("rekRow").innerText =
-        "Auton merkki: " + (parametrit.rek || "-");
-      document.getElementById("vmRow").innerText =
-        "Vuosimalli: " + (parametrit.vm || "-");
-      document.getElementById("visRow").innerText =
-        "Viskositeetti: " + (parametrit.vis || "-");
-      document.getElementById("luaRow").innerText =
-        "Öljyluokitus: " + (parametrit.lua || "-");
-
-      let kayttoTeksti = "Käyttöprofiili: ";
-      switch (parametrit.kaytto) {
-        case "normaali":
-          kayttoTeksti += "Normaali ajo"; break;
-        case "kaupunki":
-          kayttoTeksti += "Kaupunkiajo"; break;
-        case "pitka":
-          kayttoTeksti += "Pitkät ajomatkat"; break;
-        case "raskas":
-          kayttoTeksti += "Raskas käyttö / veto"; break;
-        default:
-          kayttoTeksti += "-";
-      }
-      document.getElementById("kayttoRow").innerText = kayttoTeksti;
-    }
-
-    function suositteleOljyja(parametrit) {
-      const visInput = (parametrit.vis || "").toUpperCase().replace(/\s+/g, "");
-      const luaInput = (parametrit.lua || "").toUpperCase().trim();
-      const kaytto = parametrit.kaytto;
-
-      let suositukset = TUOTTEET.filter(o => {
-        const visMatch =
-          o.viskositeetti.toUpperCase().replace(/\s+/g, "") === visInput;
-        const luaMatch = luaInput
-          ? o.luokitus.toUpperCase().includes(luaInput)
-          : true;
-        return visMatch && luaMatch;
-      });
-
-      if (kaytto && suositukset.length > 0) {
-        const profFiltered = suositukset.filter(o =>
-          o.profiilit.includes(kaytto)
-        );
-        if (profFiltered.length > 0) suositukset = profFiltered;
-      }
-
-      const cont = document.getElementById("suositukset");
-      cont.innerHTML = "";
-
-      if (suositukset.length === 0) {
-        cont.innerHTML =
-          "<p>Syötetyillä arvoilla ei löytynyt tarkkaa osumaa. Voit tarkentaa hakua tai laajentaa tuotelistaa.</p>";
-        document.getElementById("logiteksti").innerText =
-          "Vinkki: lisää tuotteita TUOTTEET-taulukkoon tai höllennä suodatuslogiikkaa.";
-        return;
-      }
-
-      suositukset.forEach(o => {
-        const div = document.createElement("div");
-        div.className = "oil-item";
-        div.innerHTML = `
-          <strong>${o.nimi}</strong> <span class="muted">(${o.koodi})</span>
-          <div>
-            <span class="tag">${o.viskositeetti}</span>
-            <span class="tag">${o.luokitus}</span>
-            ${kaytto ? `<span class="pill">Profiili: ${kaytto}</span>` : ""}
-          </div>
-          <p>${o.kuvaus}</p>
-          <p class="price">${o.hinta}</p>
-        `;
-        cont.appendChild(div);
-      });
-
-      document.getElementById("logiteksti").innerText =
-        "Tämä on esimerkkituotelista. Voit muokata TUOTTEET-taulukkoa vastaamaan omaa Fanfaro-valikoimaasi.";
-    }
-
-    (function init() {
-      const parametrit = haeParametrit();
-      naytaSyote(parametrit);
-      suositteleOljyja(parametrit);
-    })();
-  </script>
-</body>
-</html>
+  main();
+</script>
